@@ -12,6 +12,9 @@ export class FormUtils {
         
         case 'min':
           return `Valor mínimo ${errors['min'].min}`
+        
+        case 'email':
+          return 'Este campo debe tener un formato de correo válido.'
       }
     }
 
