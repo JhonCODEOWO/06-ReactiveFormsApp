@@ -73,6 +73,9 @@
 
         <span>Valid</span>
         <pre>{{ myForm.valid| json }}</pre>
+        
+        <span>Errors en name</span>
+        <pre>{{ myForm.controls.name.errors| json }}</pre>
 
         <span>Pristine</span>
         <pre>{{ myForm.pristine| json }}</pre>
