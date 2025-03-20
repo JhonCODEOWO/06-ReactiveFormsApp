@@ -1,15 +1,7 @@
-import { FormGroup } from '@angular/forms';
+import { FormArray, FormGroup, ValidationErrors } from '@angular/forms';
 
 export class FormUtils {
-  static isValidField(fieldName: string, form: FormGroup): boolean | null {
-    return form.controls[fieldName].errors && form.controls[fieldName].touched;
-  }
-
-  static getFieldError(fieldName: string, form: FormGroup): string | null {
-    if (!form.controls[fieldName]) return null;
-
-    const errors = form.controls[fieldName].errors ?? {};
-
+  static getTextError(errors: ValidationErrors){
     for(const key of Object.keys(errors)){
       switch(key){
         case 'required':
@@ -20,10 +12,35 @@ export class FormUtils {
         
         case 'min':
           return `Valor mínimo ${errors['min'].min}`
-        
       }
     }
 
     return null;
+  }
+
+  static isValidField(fieldName: string, form: FormGroup): boolean | null {
+    return form.controls[fieldName].errors && form.controls[fieldName].touched;
+  }
+
+  static getFieldError(fieldName: string, form: FormGroup): string | null {
+    if (!form.controls[fieldName]) return null;
+
+    const errors = form.controls[fieldName].errors ?? {};
+
+    return FormUtils.getTextError(errors);
+  }
+
+  static isValidFieldInArray(formArray: FormArray, index: number){
+    return (formArray.controls[index].errors && formArray.controls[index].touched)
+  }
+
+  static getFieldErrorInArray(formArray: FormArray, index: number): string | null {
+    //Si no hay elementos en el arreglo...
+    if (formArray.controls.length === 0) return null;
+
+    const errors = formArray.controls[index].errors ?? {};
+
+
+    return FormUtils.getTextError(errors);
   }
 }

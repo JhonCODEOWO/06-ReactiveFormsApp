@@ -7,11 +7,12 @@
     <div class="mb-3 row">
         <label class="col-sm-3 col-form-label">Nombre</label>
         <div class="col-sm-9">
-            <input class="form-control"
-                   placeholder="Nombre de la persona" formControlName="name">
+            <input class="form-control" placeholder="Nombre de la persona" formControlName="name">
+            @if (formUtils.isValidField('name', myForm)) {
             <span class="form-text text-danger">
-                   error message
+                {{formUtils.getFieldError('name', myForm)}}
             </span>
+            }
         </div>
     </div>
 
@@ -21,12 +22,10 @@
         <div class="col-sm-9">
 
             <div class="input-group">
-                <input class="form-control"
-                       placeholder="Agregar favorito">
+                <input class="form-control" placeholder="Agregar favorito">
 
 
-                <button class="btn btn-outline-primary"
-                        type="button">
+                <button class="btn btn-outline-primary" type="button">
                     Agregar favorito
                 </button>
             </div>
@@ -40,24 +39,23 @@
         <div class="col-sm-9">
 
             <!-- Indica a angular que bloque manejará el arreglo -->
-            <div class="mb-1" formArrayName="favoriteGames"> 
+            <div class="mb-1" formArrayName="favoriteGames">
 
                 <!-- Recorrer los elementos dentro del control que contiene un array -->
                 @for (item of favoriteGames.controls; track $index; let i = $index) {
-                    <div class="input-group">
-                        <!-- Asignar valor al input mediante indice -->
-                        <input class="form-control"
-                        [formControlName]="i"
-                        >
-    
-                        <button class="btn btn-outline-danger"
-                                type="button">
-                          Eliminar
-                      </button>
-                    </div>
+                <div class="input-group">
+                    <!-- Asignar valor al input mediante indice -->
+                    <input class="form-control" [formControlName]="i">
+
+                    <button class="btn btn-outline-danger" type="button">
+                        Eliminar
+                    </button>
+                </div>
+                @if (formUtils.isValidFieldInArray(favoriteGames, i)) {
                     <span class="form-text text-danger">
-                        Este campo es requerido
-                     </span>
+                        {{formUtils.getFieldErrorInArray(favoriteGames, i)}}
+                    </span>
+                }
                 }
 
             </div>
@@ -69,10 +67,8 @@
 
     <div class="row">
         <div class="col-sm-12">
-            <button type="submit"
-                    class="btn btn-primary float-end"
-                    >
-                    <!-- [disabled]="myForm.invalid" -->
+            <button type="submit" class="btn btn-primary float-end">
+                <!-- [disabled]="myForm.invalid" -->
                 Guardar
             </button>
         </div>

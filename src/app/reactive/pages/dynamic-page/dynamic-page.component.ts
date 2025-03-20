@@ -1,6 +1,7 @@
 import { JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormUtils } from '../../../utils/form-utils';
 
 @Component({
   selector: 'app-dynamic-page',
@@ -10,6 +11,7 @@ import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angula
 })
 export class DynamicPageComponent {
   private fb = inject(FormBuilder)
+  formUtils = FormUtils;
 
   myForm = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(3)]],
@@ -22,5 +24,13 @@ export class DynamicPageComponent {
 
   get favoriteGames(){
     return this.myForm.get('favoriteGames') as FormArray;
+  }
+
+  getFieldErrorFromArray(form: FormGroup, array: FormArray, index: number){
+    const control = array.controls[index].errors ?? [];
+    
+    for(let key of Object.keys(control)) {
+      
+    }
   }
 }
