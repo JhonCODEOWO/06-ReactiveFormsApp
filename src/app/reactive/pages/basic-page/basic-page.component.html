@@ -12,10 +12,10 @@
 
                     <input type="text" class="form-control" placeholder="Nombre del producto" formControlName="name">
 
-                    @if (isValidField('name')) {
+                    @if (formUtils.isValidField('name', myForm)) {
                     <span class="form-text text-danger">
                         <!-- Debe de ser de 3 letras -->
-                        {{getFieldError('name')}}
+                        {{formUtils.getFieldError('name', myForm)}}
                     </span>
                     }
                 </div>
@@ -26,10 +26,10 @@
                 <label class="col-sm-3 col-form-label">Precio</label>
                 <div class="col-sm-9">
                     <input type="number" class="form-control" placeholder="Precio del producto" formControlName="price">
-                    @if (isValidField('price')) {
+                    @if (formUtils.isValidField('price', myForm)) {
                     <span class="form-text text-danger">
                         <!-- Debe de ser de 3 letras -->
-                        {{getFieldError('price')}}
+                        {{formUtils.getFieldError('price', myForm)}}
                     </span>
                     }
                 </div>
@@ -42,10 +42,10 @@
                     <input type="number" class="form-control" placeholder="Existencias del producto"
                         formControlName="inStorage">
 
-                    @if (isValidField('inStorage')) {
+                    @if (formUtils.isValidField('inStorage', myForm)) {
                     <span class="form-text text-danger">
                         <!-- Debe de ser de 3 letras -->
-                        {{getFieldError('inStorage')}}
+                        {{formUtils.getFieldError('inStorage', myForm)}}
                     </span>
                     }
                 </div>
