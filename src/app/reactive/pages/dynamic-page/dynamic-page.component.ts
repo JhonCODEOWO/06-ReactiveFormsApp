@@ -1,6 +1,6 @@
 import { JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormUtils } from '../../../utils/form-utils';
 
 @Component({
@@ -19,18 +19,31 @@ export class DynamicPageComponent {
       ['Metal gear', Validators.required],
       ['Persona 3', Validators.required],
     ], 
-    Validators.minLength(2)),
+    [Validators.minLength(2), Validators.required]),
   })
+
+  newFavorite = new FormControl('', Validators.required);
 
   get favoriteGames(){
     return this.myForm.get('favoriteGames') as FormArray;
   }
 
-  getFieldErrorFromArray(form: FormGroup, array: FormArray, index: number){
-    const control = array.controls[index].errors ?? [];
-    
-    for(let key of Object.keys(control)) {
-      
-    }
+  onAddToFavorites(){
+    if (this.newFavorite.invalid) return;
+
+    const newGame = this.newFavorite.value;
+
+    //Añade un nuevo elemento al control favoriteGames dentro de myForm, si el elemento a añadir no cumple los validadores, no se añade
+    this.favoriteGames.push(this.fb.control(newGame, Validators.required));
+
+    this.newFavorite.reset();
+  }
+
+  onDeleteFavorites(index: number){
+    this.favoriteGames.removeAt(index);
+  }
+
+  onSubmit(){
+    this.myForm.markAllAsTouched();
   }
 }
