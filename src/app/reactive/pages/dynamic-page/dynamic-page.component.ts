@@ -44,6 +44,9 @@ export class DynamicPageComponent {
   }
 
   onSubmit(){
+    console.log(this.myForm.value);
     this.myForm.markAllAsTouched();
+    if(this.myForm.invalid) return;
+    console.log('Continuar operaciones');
   }
 }
