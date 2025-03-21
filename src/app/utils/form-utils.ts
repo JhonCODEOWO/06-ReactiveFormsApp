@@ -1,4 +1,4 @@
-import { FormArray, FormGroup, ValidationErrors } from '@angular/forms';
+import { AbstractControl, FormArray, FormGroup, ValidationErrors } from '@angular/forms';
 
 export class FormUtils {
   //Expresiones regulares
@@ -63,5 +63,19 @@ export class FormUtils {
 
 
     return FormUtils.getTextError(errors);
+  }
+
+  static isFieldOneEqualFieldTwo(field: string, field2: string){
+    //formGroup: AbstractControl es el acceso al formulario en donde se utilice el validador angular lo envía automáticamente al usarlo como validador
+    return (formGroup: AbstractControl) => {
+      //Obtener controls del FormGroup
+      const field1Value = formGroup.get(field)?.value;
+      const field2Value = formGroup.get(field2)?.value;
+
+      //Realizar operaciones para ver si se cumple la validación deseada
+      return field1Value === field2Value ? null : {
+        passwordsNotEqual: true
+      }
+    }
   }
 }
