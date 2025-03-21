@@ -1,5 +1,13 @@
 import { AbstractControl, FormArray, FormGroup, ValidationErrors } from '@angular/forms';
 
+async function sleep() {
+  return new Promise(resolve => {
+    setTimeout(()=> {
+      resolve(true)
+    }, 2000)
+  })
+}
+
 export class FormUtils {
   //Expresiones regulares
   static namePattern = '([a-zA-Z]+) ([a-zA-Z]+)';
@@ -31,6 +39,13 @@ export class FormUtils {
             return 'No se permiten espacios para este campo.';
           }
           return 'Error de patrón contra expresión regular, no se ha controlado la respuesta aún';
+
+        case 'emailTaken':
+          return 'El correo electrónico ya ha sido utilizado por lo que no puede utilizarse.';
+
+        case 'notStrider':
+          return 'No se permite el uso de strider';
+
         default:
           return `Error sin formato en FormUtils: ${key}`
       }
@@ -77,5 +92,33 @@ export class FormUtils {
         passwordsNotEqual: true
       }
     }
+  }
+
+  static async checkingServerResponse(control: AbstractControl): Promise<ValidationErrors | null>{
+    await sleep(); // 2 Segundos para resolver
+
+    const formValue = control.value; //Tomar valor del control a evaluar en base a su valor con la respuesta
+    console.log(formValue);
+
+    //Realizar validaciones comparando el valor del campo con un dato del lado del servidor simulando que hola@mundo.com es un correo existente en el backend
+    if(formValue === 'hola@mundo.com') {
+      //Error a retornar
+      return {
+        emailTaken: true,
+      };
+    }
+    return null;
+  }
+
+  static notStrider(control: AbstractControl): ValidationErrors | null {
+    const value = control.value;
+
+    if (value === 'strider') {
+      return {
+        notStrider: true,
+      }
+    }
+
+    return null;
   }
 }
