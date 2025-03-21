@@ -12,13 +12,13 @@
                 <div class="col-sm-9">
                     <input type="text"
                            class="form-control"
-                           placeholder="Nombre del usuario"
+                           placeholder="Nombre completo incluyendo apellidos"
                            formControlName="name"
                            >
 
                            @if (formUtils.isValidField('name', myForm)) {
                             <span class="form-text text-danger">
-                                Debe de ser en formato de nombre y apellido
+                                Este campo es obligatorio y debe contener el nombre con apellidos.
                             </span>
                            }
                 </div>
