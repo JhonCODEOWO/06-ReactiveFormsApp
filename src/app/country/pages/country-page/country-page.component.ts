@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@ang
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CountryService } from '../../services/country.service';
 import { Country } from '../../interfaces/country.interface';
-import { catchError, of, Subscription, switchMap, tap } from 'rxjs';
+import { catchError, filter, map, of, Subscription, switchMap, tap } from 'rxjs';
 
 @Component({
   selector: 'app-country-page',
@@ -28,9 +28,11 @@ export class CountryPageComponent {
   //Efecto que se va a realizar siempre que un valor cambie
   onFormChange = effect((onCleanup) => {
     const formSubscription = this.onRegionChanged();
+    const countrySubscription = this.onCountryChange();
 
     onCleanup(() => {
       formSubscription.unsubscribe();
+      countrySubscription.unsubscribe();
       console.log('Limpiado');
     })
   })
@@ -51,13 +53,29 @@ export class CountryPageComponent {
       //Cambia el observable original por el que se utilice aquí alterando el flujo y fuente de datos
       switchMap(region => this.countryService.getCountriesByRegion(region ?? '').pipe(catchError(()=> of([]))))
     )
-    .subscribe({
-      next: countries => {
-        this.countriesByRegion.set(countries);
-      },
-      error: (error) => {
-        console.log('Ha ocurrido un error');
-      }
+    .subscribe(countries => {
+      this.countriesByRegion.set(countries);
+    })
+  }
+
+  onCountryChange(){
+    return this.myForm.get('country')!.valueChanges
+    .pipe(
+      //Asignar un valor vacío si value es indefinido
+      map((value) => {
+        return (!value)? '': value;
+      }),
+      tap(() => this.myForm.get('border')?.setValue('')),
+      //Continúa la operación si la evaluación es true
+      filter(value => value.length>0),
+      //Cambiar el flujo para obtener el resultado del servicio y obtener el país.
+      switchMap(alphaCode => this.countryService.getCountryByAlphaCode(alphaCode)),
+      //Cambiar el flujo por la petición nuevo que devolverá un arreglo de Country[] buscados por su Code
+      switchMap(country => this.countryService.getCountryNameByCodes(country.borders))
+    )
+    .subscribe( countriesBorders => {
+      this.countriesBorders.set(countriesBorders);
+      console.log(this.countriesBorders());
     })
   }
   // formRegionChanged = this.myForm.get('region')?.valueChanges.subscribe(value => {
